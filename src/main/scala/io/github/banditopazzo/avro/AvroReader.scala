@@ -1,6 +1,6 @@
 package io.github.banditopazzo.avro
 
-import java.io.InputStream
+import java.io.{File, FileInputStream, InputStream}
 
 import com.sksamuel.avro4s.{AvroInputStream, Decoder, SchemaFor}
 import org.apache.hadoop.fs.{FileSystem, LocatedFileStatus, Path, RemoteIterator}
@@ -13,8 +13,15 @@ object AvroReader {
 
     val is = AvroInputStream.data[T].from(inputStream).build(schema)
     val elements = is.iterator
-    is.close()
+    //is.close() //TODO: find way to enable
     elements
+  }
+
+  def readFromFileLocal[T <: Product with Serializable](fileName: String)
+                                                       (implicit schemaFor: SchemaFor[T], decoder: Decoder[T]): Iterator[T] = {
+    val file = new File(fileName)
+    val inputStream = new FileInputStream(file)
+    readFromInputStream(inputStream)
   }
 
   def readFromHDFSFile[T <: Product with Serializable](fs: FileSystem, fileName: String)

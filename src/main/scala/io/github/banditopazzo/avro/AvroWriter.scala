@@ -1,6 +1,6 @@
 package io.github.banditopazzo.avro
 
-import java.io.{FileOutputStream, OutputStream}
+import java.io.{File, FileOutputStream, OutputStream}
 
 import com.sksamuel.avro4s.{AvroOutputStream, Encoder, SchemaFor}
 import org.apache.hadoop.fs.{FileSystem, Path}
@@ -21,13 +21,13 @@ object AvroWriter {
 
   def writeOneToLocal[T <: Product with Serializable](fileName: String, element: T)
                                                      (implicit schemaFor: SchemaFor[T], encoder: Encoder[T]): Unit = {
-    val outputStream = new FileOutputStream(fileName)
+    val outputStream = new FileOutputStream(new File(fileName))
     writeOneToOutputStream(element, outputStream)
   }
 
   def writeManyToLocal[T <: Product with Serializable](fileName: String, elements: Seq[T])
                                                       (implicit schemaFor: SchemaFor[T], encoder: Encoder[T]): Unit = {
-    val outputStream = new FileOutputStream(fileName)
+    val outputStream = new FileOutputStream(new File(fileName))
     writeManyToOutputStream(elements, outputStream)
   }
 
